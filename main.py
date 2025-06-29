@@ -8,6 +8,7 @@ import tkinter.simpledialog
 import snippet_io
 
 class Application(tk.Frame):
+
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
         snippet_io.init_snippets_file()
@@ -33,9 +34,11 @@ class Application(tk.Frame):
             text.insert("1.0", snippet['code'])
             text.config(state="disabled")
             text.pack(padx=10, pady=10, fill="both", expand=True)
+
     def add_snippet(self):
         code = self.clipboard_get()
         title = tk.simpledialog.askstring("New Snippet", "Enter a title for the new snippet:")
+        
         if title:
             new_snippet = {
                 "title": title,
@@ -44,6 +47,7 @@ class Application(tk.Frame):
                 "tags": [],
                 "created": "2025-06-28"
             }
+
             self.snippets.sort(key=lambda x: x['title'].lower())
             self.snippets.append(new_snippet)
             snippet_io.save_snippets(self.snippets)
@@ -58,27 +62,32 @@ class Application(tk.Frame):
         snippet_to_delete = self.displayed_snippets[index]
 
         confirm = tk.messagebox.askyesno("Confirm Delete", f"Delete '{snippet_to_delete['title']}'?")
+        
         if confirm:
             self.snippets.remove(snippet_to_delete)
             snippet_io.save_snippets(self.snippets)
-            self.refresh_listbox()  # A method that repopulates the listbox using self.displayed_snippets
+            self.refresh_listbox()
+            
             tk.messagebox.showinfo("Deleted", f"Snippet '{snippet_to_delete['title']}' deleted.")
+
     def refresh_listbox(self):
+        # A method that repopulates the listbox using self.displayed_snippets
         self.snippets.sort(key=lambda x: x['title'].lower())
         self.displayed_snippets = self.snippets.copy()
 
         self.listbox.delete(0, tk.END)
         for snippet in self.displayed_snippets:
             self.listbox.insert(tk.END, snippet["title"])
-
-            
+           
     def copy_snippet(self):
         selection = self.listbox.curselection()
+        
         if selection:
             index = selection[0]
             snippet = snippet = self.displayed_snippets[index]
             self.clipboard_clear()
             self.clipboard_append(snippet["code"])
+            
             tk.messagebox.showinfo("Copied!", f"'{snippet['title']}' copied to clipboard.")
         else:
             tk.messagebox.showwarning("No selection", "Please select a snippet first.")
