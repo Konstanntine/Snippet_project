@@ -113,6 +113,7 @@ class Application(tk.Frame):
         self.quitButton = tk.Button(self.button_panel, width=10, text='Quit', command=self.quit)
         self.quitButton.pack(pady=(0, 5))
 
+
 if __name__ == "__main__":
     app = Application()
     app.master.geometry('600x400')
