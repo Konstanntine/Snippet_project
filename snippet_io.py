@@ -1,6 +1,7 @@
 import json
 import os
 # -*- coding: utf-8 -*-
+__init__ = "snippet_io"
 
 def init_snippets_file(filename="snippets.json"):
     if not os.path.exists(filename):
@@ -29,6 +30,9 @@ def load_snippets(filename="snippets.json"):
             return json.load(f)
     except FileNotFoundError:
         return []
+def save_snippets(snippets, filename="snippets.json"):
+    with open(filename, "w") as f:
+        json.dump(snippets, f, indent=4)
 
 
 if __name__ == "__main__":

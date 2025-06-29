@@ -3,9 +3,11 @@ import json
 import os
 import snippet_io
 import tkinter.messagebox
+import tkinter.simpledialog
 from snippet_io import init_snippets_file
 # Initialize the snippets file if it doesn't exist
 from snippet_io import load_snippets
+from snippet_io import save_snippets
 # -*- coding: utf-8 -*-
 #
 class Application(tk.Frame):
@@ -49,7 +51,25 @@ class Application(tk.Frame):
             text.config(state="disabled")
             text.pack(padx=10, pady=10, fill="both", expand=True)
     def add_snippet(self):
-        pass
+        code = self.clipboard_get()
+        title = tk.simpledialog.askstring("New Snippet", "Enter a title for the new snippet:")
+        if title:
+            new_snippet = {
+                "title": title,
+                "code": code,
+                "language": "Python",
+                "tags": [],
+                "created": "2025-06-28"
+            }
+            self.snippets.append(new_snippet)
+            self.listbox.insert(tk.END, title)
+            from snippet_io import save_snippets
+            save_snippets(self.snippets)
+
+            tk.messagebox.showinfo("Saved!", f"Snippet '{title}' added.")
+        else:
+            tk.messagebox.showinfo("Cancelled", "No snippet was added.")
+
     def delete_snippet(self):
         pass
     def copy_snippet(self):
