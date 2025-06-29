@@ -8,7 +8,6 @@ import tkinter.simpledialog
 import snippet_io
 
 class Application(tk.Frame):
-
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
         snippet_io.init_snippets_file()
