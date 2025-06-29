@@ -1,41 +1,24 @@
+# -*- coding: utf-8 -*-
 import tkinter as tk
 import json
 import os
 import snippet_io
 import tkinter.messagebox
 import tkinter.simpledialog
-from snippet_io import init_snippets_file
-# Initialize the snippets file if it doesn't exist
-from snippet_io import load_snippets
-from snippet_io import save_snippets
-# -*- coding: utf-8 -*-
-#
+import snippet_io
+
 class Application(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
-        init_snippets_file()
-        self.snippets = load_snippets()
+        snippet_io.init_snippets_file()
+        self.snippets = snippet_io.load_snippets()
+        self.snippets.sort(key=lambda x: x['title'].lower())
         self.grid()
         self.create_widgets()
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.button_panel.grid(sticky="ns")
-
-        
-
-
-    def load_snippets(filename="snippets.json"):
-        try:
-            with open(filename, "r") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            return []
-    def save_snippets(snippets, filename="snippets.json"):
-        with open(filename, "w") as f:
-            json.dump(snippets, f, indent=4)
-
-
 
     def view_snippet(self, event):
         selection = self.listbox.curselection()
@@ -61,37 +44,50 @@ class Application(tk.Frame):
                 "tags": [],
                 "created": "2025-06-28"
             }
+            self.snippets.sort(key=lambda x: x['title'].lower())
             self.snippets.append(new_snippet)
-            self.listbox.insert(tk.END, title)
-            from snippet_io import save_snippets
-            save_snippets(self.snippets)
+            snippet_io.save_snippets(self.snippets)
+            self.refresh_listbox()
 
             tk.messagebox.showinfo("Saved!", f"Snippet '{title}' added.")
         else:
             tk.messagebox.showinfo("Cancelled", "No snippet was added.")
 
     def delete_snippet(self):
-        pass
+        index = self.listbox.curselection()[0]
+        snippet_to_delete = self.displayed_snippets[index]
+
+        confirm = tk.messagebox.askyesno("Confirm Delete", f"Delete '{snippet_to_delete['title']}'?")
+        if confirm:
+            self.snippets.remove(snippet_to_delete)
+            snippet_io.save_snippets(self.snippets)
+            self.refresh_listbox()  # A method that repopulates the listbox using self.displayed_snippets
+            tk.messagebox.showinfo("Deleted", f"Snippet '{snippet_to_delete['title']}' deleted.")
+    def refresh_listbox(self):
+        self.snippets.sort(key=lambda x: x['title'].lower())
+        self.displayed_snippets = self.snippets.copy()
+
+        self.listbox.delete(0, tk.END)
+        for snippet in self.displayed_snippets:
+            self.listbox.insert(tk.END, snippet["title"])
+
+            
     def copy_snippet(self):
         selection = self.listbox.curselection()
         if selection:
             index = selection[0]
-            snippet = self.snippets[index]
+            snippet = snippet = self.displayed_snippets[index]
             self.clipboard_clear()
             self.clipboard_append(snippet["code"])
             tk.messagebox.showinfo("Copied!", f"'{snippet['title']}' copied to clipboard.")
         else:
             tk.messagebox.showwarning("No selection", "Please select a snippet first.")
-
-        
-
-
+  
     def create_widgets(self):
         self.listbox = tk.Listbox(self, width=50, height= 20)
         self.listbox.grid(row=0, column=0, rowspan=2, padx=10, pady=10, sticky="nsew")
         self.listbox.bind("<Double-Button-1>", self.view_snippet)
-        for snippet in self.snippets:
-            self.listbox.insert(tk.END, snippet["title"])
+        self.refresh_listbox()
 
 
         self.button_panel = tk.Frame(self)
