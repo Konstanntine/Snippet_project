@@ -10,18 +10,8 @@
         "created": "2025-06-28"
     },
     {
-        "title": "Factorial (Recursive)",
-        "code": "def fact(n): return 1 if n <= 1 else n * fact(n - 1)",
-        "language": "Python",
-        "tags": [
-            "math",
-            "recursion"
-        ],
-        "created": "2025-06-28"
-    },
-    {
-        "title": "test",
-        "code": "test\n",
+        "title": "test 1",
+        "code": "self.refresh_listbox()",
         "language": "Python",
         "tags": [],
         "created": "2025-06-28"
