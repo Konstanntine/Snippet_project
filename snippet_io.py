@@ -1,6 +1,7 @@
 import json
 import os
-__init__ = "filegen"
+# -*- coding: utf-8 -*-
+
 def init_snippets_file(filename="snippets.json"):
     if not os.path.exists(filename):
         sample_data = [
@@ -21,6 +22,14 @@ def init_snippets_file(filename="snippets.json"):
         ]
         with open(filename, "w") as f:
             json.dump(sample_data, f, indent=4)
+
+def load_snippets(filename="snippets.json"):
+    try:
+        with open(filename, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
 
 if __name__ == "__main__":
     init_snippets_file()
