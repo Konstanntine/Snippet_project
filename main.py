@@ -83,7 +83,7 @@ class Application(tk.Frame):
         
         if selection:
             index = selection[0]
-            snippet = snippet = self.displayed_snippets[index]
+            snippet = self.displayed_snippets[index]
             self.clipboard_clear()
             self.clipboard_append(snippet["code"])
             
