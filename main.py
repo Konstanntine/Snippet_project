@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
 import tkinter as tk
-import json
-import os
+from tkinter import messagebox
+from tkinter import simpledialog
 import snippet_io
-import tkinter.messagebox
-import tkinter.simpledialog
-import snippet_io
+
 
 class Application(tk.Frame):
     def __init__(self, master=None):
